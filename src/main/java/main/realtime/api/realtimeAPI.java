@@ -30,8 +30,9 @@ public class realtimeAPI {
 		ArrayList<FlightDTO> info = new ArrayList<FlightDTO>();
 		
 		for (int x = 0; x < airport.size(); x++) { // 2개까지 검색
-			if(x<2) {
+			if(x<3) {
 				code = airport.get(x).getCode();
+				System.out.println(code);
 				StringBuilder urlBuilder = new StringBuilder(
 						"http://openapi.airport.kr/openapi/service/StatusOfPassengerFlightsDS/getPassengerDeparturesDS");
 				urlBuilder.append("?" + URLEncoder.encode("ServiceKey", "UTF-8")
@@ -90,10 +91,6 @@ public class realtimeAPI {
 						}
 					
 					}
-					// System.out.println(info.get(2).getAirline());
-					/*
-					 * for (int i = 0; i < info.size(); i++) { System.out.println(info.get(i)); }
-					 */
 				} catch (ParseException e) {
 					e.printStackTrace();
 				}

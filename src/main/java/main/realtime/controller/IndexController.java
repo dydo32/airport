@@ -17,6 +17,7 @@ import erp.pf.controller.AirportMongoData;
 import erp.pf.service.PFService;
 import main.PP.controller.PredictPassenger;
 import main.PP.dto.PredictPassengerDTO;
+import main.realtime.api.mainAPI;
 
 @Controller
 public class IndexController extends AbstractView{
@@ -25,8 +26,11 @@ public class IndexController extends AbstractView{
 	PFService service;
 	@Autowired
 	PredictPassenger ppservice;
+/*	@Autowired
+	AirportMongoData amservice;*/
 	@Autowired
-	AirportMongoData amservice;
+	mainAPI mainService;
+	
 	
 	@RequestMapping("/main/index.do")
 	public String main(Model model) {
@@ -51,14 +55,15 @@ public class IndexController extends AbstractView{
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		today = new java.text.SimpleDateFormat ("yyyyMMdd").format(new java.util.Date()); 
+/*		today = new java.text.SimpleDateFormat ("yyyyMMdd").format(new java.util.Date()); 
 		int todate = Integer.parseInt(today);
 		todate = todate - 10000;
+		System.out.println(todate);*/
 		
-		model.addAttribute("todayflight", amservice.condition(todate));
+		model.addAttribute("todayflight", mainService.mainCount("출발")+"");
 		model.addAttribute("passengerresult", passengerresult);
-		model.addAttribute("todaydelay", amservice.mainDelay(todate));
-		model.addAttribute("todaycancel", amservice.mainCancel(todate));
+		model.addAttribute("todaydelay", mainService.mainCount("지연")+"");
+		model.addAttribute("todaycancel", mainService.mainCount("결항")+"");
 		model.addAttribute("ppinfolist1", ppinfolist1);
 
 		return "index";
