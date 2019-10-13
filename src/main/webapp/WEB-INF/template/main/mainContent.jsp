@@ -131,8 +131,9 @@
 						<div class="milestone_text">결항</div>
 					</div>
 				</div>
-
 			</div>
+			<br/>
+			<div style="text-align: right;">현재 시각 인천 공항 정보</div>
 		</div>
 	</div>
 				</div>		

@@ -1,7 +1,10 @@
 package main.realtime.controller;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -13,7 +16,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.view.AbstractView;
 
-import erp.pf.controller.AirportMongoData;
 import erp.pf.service.PFService;
 import main.PP.controller.PredictPassenger;
 import main.PP.dto.PredictPassengerDTO;
@@ -26,8 +28,6 @@ public class IndexController extends AbstractView{
 	PFService service;
 	@Autowired
 	PredictPassenger ppservice;
-/*	@Autowired
-	AirportMongoData amservice;*/
 	@Autowired
 	mainAPI mainService;
 	
@@ -36,7 +36,10 @@ public class IndexController extends AbstractView{
 	public String main(Model model) {
 
 		ArrayList<PredictPassengerDTO> ppinfolist1 = null;
-		String today = new java.text.SimpleDateFormat ("yyyy-MM-dd").format(new java.util.Date()); 
+		SimpleDateFormat sdf = new SimpleDateFormat("HH");
+		Calendar cal = new GregorianCalendar();
+		String curTime = sdf.format(cal.getTime());
+		System.out.println(curTime);
 		int passengerresult = 0;
 		try {
 			ppinfolist1 =  ppservice.PredictPassenger("0");
@@ -44,7 +47,7 @@ public class IndexController extends AbstractView{
 			for(int i=0; i<ppinfolist1.size(); i++) {
 				PredictPassengerDTO ppinfo = ppinfolist1.get(i);
 				String atime = ppinfo.getAtime().substring(0, 2);
-				if(today.substring(2, 4).equals(atime)) {
+				if(!atime.equals("합계") && Integer.parseInt(atime)==Integer.parseInt(curTime)) {
 					passengerresult = (int) (passengerresult + ppinfolist1.get(i).getT1sum5()
 							+ ppinfolist1.get(i).getT1sum6()
 							+ ppinfolist1.get(i).getT1sum7()+ ppinfolist1.get(i).getT1sum8()
@@ -55,10 +58,6 @@ public class IndexController extends AbstractView{
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-/*		today = new java.text.SimpleDateFormat ("yyyyMMdd").format(new java.util.Date()); 
-		int todate = Integer.parseInt(today);
-		todate = todate - 10000;
-		System.out.println(todate);*/
 		
 		model.addAttribute("todayflight", mainService.mainCount("출발")+"");
 		model.addAttribute("passengerresult", passengerresult);

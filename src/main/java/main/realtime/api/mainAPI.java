@@ -24,19 +24,24 @@ public class mainAPI {
 	public int mainCount(String what) {
 		int count = 0;
 		int startcount = 0;
-		SimpleDateFormat sdf = new SimpleDateFormat("HHmm");
+		SimpleDateFormat sdf = new SimpleDateFormat("HH");
 		Calendar cal = new GregorianCalendar();
-		String curTime = sdf.format(cal.getTime());
-		System.out.println(curTime);
-		
+		String fromTime = sdf.format(cal.getTime());
+		int intTime = Integer.parseInt(fromTime)+1;
+		String toTime = "";
+		if(intTime<10) {
+			toTime = "0"+intTime;
+		}else {
+			toTime = intTime + "";
+		}
 		StringBuilder urlBuilder = new StringBuilder(
 				"http://openapi.airport.kr/openapi/service/StatusOfPassengerFlights/getPassengerDepartures");
 		try {
 			urlBuilder.append("?" + URLEncoder.encode("ServiceKey", "UTF-8")
 					+ "=SIiebQZNZnHWh2wfaDQr3sqEbhZH5dOGGBBnUuGTfGX0YfQLrVkPYI9IoYeHbFV0b2x0TxmtG873O%2BSlIjb8WA%3D%3D");
-			urlBuilder.append("&" + URLEncoder.encode("to_time", "UTF-8") + "=" + URLEncoder.encode(curTime, "UTF-8"));
+			urlBuilder.append("&" + URLEncoder.encode("to_time", "UTF-8") + "=" + URLEncoder.encode(toTime+"00", "UTF-8"));
 			urlBuilder.append("&" + URLEncoder.encode("lang", "UTF-8") + "=" + URLEncoder.encode("K", "UTF-8"));
-			urlBuilder.append("&" + URLEncoder.encode("from_time", "UTF-8") + "=" + URLEncoder.encode("0000", "UTF-8"));
+			urlBuilder.append("&" + URLEncoder.encode("from_time", "UTF-8") + "=" + URLEncoder.encode(fromTime+"00", "UTF-8"));
 			URL url = new URL(urlBuilder.toString());
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 			conn.setRequestMethod("GET");
@@ -68,7 +73,6 @@ public class mainAPI {
 				JSONObject items = (JSONObject) body.get("items");
 				JSONArray item = (JSONArray) items.get("item");
 				startcount = item.size();
-				System.out.println("비행기:" + item.size());
 				for (int i = 0; i < item.size(); i++) {
 					JSONObject tempObj = (JSONObject) item.get(i);
 					if (((String)tempObj.get("remark")).equals(what)) {
